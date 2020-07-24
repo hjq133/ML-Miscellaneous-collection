@@ -85,6 +85,7 @@ def group_points(mean_shift_points):
 
 
 def train_mean_shift(points, kernel_bandwidth):
+    track = []
     mean_shift_points = np.mat(points)
     max_min_dist = 1
     iteration = 0  # 训练的代数
@@ -96,6 +97,7 @@ def train_mean_shift(points, kernel_bandwidth):
         max_min_dist = 0
         iteration += 1
         print("\titeration : " + str(iteration))
+        track.append(np.copy(mean_shift_points))
         for i in range(0, m):
             # 判断每一个样本点是否需要计算偏移均值
             if not need_shift[i]:
@@ -113,10 +115,17 @@ def train_mean_shift(points, kernel_bandwidth):
             mean_shift_points[i] = p_new
     # 计算最终的group
     group = group_points(mean_shift_points)  # 计算所属的类别
-    return mean_shift_points, group
+    return mean_shift_points, group, track
 
 
-def show_result(origin_data, group, mean_shift_points):
+def show_track(data, ax):
+    for i in range(len(data)):
+        x, y = data[i, 0], data[i, 1]
+        ax.scatter(x, y)
+    plt.show()
+
+
+def show_result(origin_data, group, mean_shift_points, track):
     fig, ax = plt.subplots()
     color = ['b', 'c', 'r', 'g', 'm', 'k', 'y']
     for i in range(len(origin_data)):
@@ -127,7 +136,13 @@ def show_result(origin_data, group, mean_shift_points):
         x, y = mean_shift_points[i, 0], mean_shift_points[i, 1]
         c = color[group[i]]
         ax.scatter(x, y, c=c, marker='*', s=100)
+    fig2, ax2 = plt.subplots()
+    for tk in track:
+        for i in range(len(tk)):
+            x, y = tk[i, 0], tk[i, 1]
+            ax2.scatter(x, y, c='k')
     ax.grid(True)
+    ax2.grid(True)
     plt.show()
 
 
@@ -135,5 +150,5 @@ if __name__ == '__main__':
     num = 15
     data = create_data(num)
     origin_data = np.copy(data)
-    mean_shift_points, group = train_mean_shift(data, kernel_bandwidth=0.3)
-    show_result(origin_data, group, mean_shift_points)
+    mean_shift_points, group, track = train_mean_shift(data, kernel_bandwidth=0.3)
+    show_result(origin_data, group, mean_shift_points, track)
