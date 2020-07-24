@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+import cv2
 
 MIN_DISTANCE = 0.000001  # mini error
 
