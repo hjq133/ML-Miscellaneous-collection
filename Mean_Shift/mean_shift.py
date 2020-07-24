@@ -83,7 +83,7 @@ def group_points(mean_shift_points):
     return group_assignment
 
 
-def train_mean_shift(points, kernel_bandwidth=2):
+def train_mean_shift(points, kernel_bandwidth):
     mean_shift_points = np.mat(points)
     max_min_dist = 1
     iteration = 0  # 训练的代数
@@ -112,4 +112,27 @@ def train_mean_shift(points, kernel_bandwidth=2):
             mean_shift_points[i] = p_new
     # 计算最终的group
     group = group_points(mean_shift_points)  # 计算所属的类别
-    return np.mat(points), mean_shift_points, group
+    return mean_shift_points, group
+
+
+def show_result(origin_data, group, mean_shift_points):
+    fig, ax = plt.subplots()
+    color = ['b', 'c', 'r', 'g', 'm', 'k', 'y']
+    for i in range(len(origin_data)):
+        x, y = origin_data[i][0], origin_data[i][1]
+        c = color[group[i]]
+        ax.scatter(x, y, c=c)
+    for i in range(len(mean_shift_points)):
+        x, y = mean_shift_points[i, 0], mean_shift_points[i, 1]
+        c = color[group[i]]
+        ax.scatter(x, y, c=c, marker='*', s=100)
+    ax.grid(True)
+    plt.show()
+
+
+if __name__ == '__main__':
+    num = 15
+    data = create_data(num)
+    origin_data = np.copy(data)
+    mean_shift_points, group = train_mean_shift(data, kernel_bandwidth=0.3)
+    show_result(origin_data, group, mean_shift_points)
