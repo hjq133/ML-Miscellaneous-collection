@@ -140,14 +140,14 @@ def show_result(origin_data, group, mean_shift_points, track):
     for tk in track:
         for i in range(len(tk)):
             x, y = tk[i, 0], tk[i, 1]
-            ax2.scatter(x, y, c='k')
+            ax2.scatter(x, y, c='k', s=30)
     ax.grid(True)
     ax2.grid(True)
     plt.show()
 
 
 if __name__ == '__main__':
-    num = 15
+    num = 50
     data = create_data(num)
     origin_data = np.copy(data)
     mean_shift_points, group, track = train_mean_shift(data, kernel_bandwidth=0.3)
